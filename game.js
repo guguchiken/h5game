@@ -87,12 +87,12 @@ var playGame = new Phaser.Class({
         this.add.sprite(10, 5, "gametitle").setOrigin(0, 0);
         var howTo = this.add.sprite(game.config.width, 5, "howtoplay");
         howTo.setOrigin(1, 0);
-        var logo = this.add.sprite(game.config.width / 2, game.config.height, "logo");
-        logo.setOrigin(0.5, 1);
-        logo.setInteractive();
-        logo.on("pointerdown", function(){
-            window.location.href = "enjoy it!!!"
-        });
+        //var logo = this.add.sprite(game.config.width / 2, game.config.height, "logo");
+        //logo.setOrigin(0.5, 1);
+        //logo.setInteractive();
+        //logo.on("pointerdown", function(){
+        //    window.location.href = "enjoy it!!!"
+        //});
         this.scoreText = this.add.bitmapText(this.tileDestination(0, COL) - 80, this.tileDestination(0, ROW) - 225, "font", "0");
         this.bestScoreText = this.add.bitmapText(this.tileDestination(2, COL) - 190, this.tileDestination(0, ROW) - 225, "font", this.bestScore.toString());
         //键盘按下执行的操作
