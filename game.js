@@ -10,12 +10,12 @@ var COL = 1;//4096 分别用于定位行和列的常量
 // 窗口第一次加载
 window.onload = function() {
     var gameConfig = {
-       type: Phaser.CANVAS,
-       width: gameOptions.tileSize * 4 + gameOptions.tileSpacing * 5,
-       height: (gameOptions.tileSize * 4 + gameOptions.tileSpacing * 5) * 16 / 9,
-       backgroundColor: 0xecf0f1,
-       scene: [preloadAssets, playGame]
-   };
+        type: Phaser.CANVAS,
+        width: gameOptions.tileSize * 4 + gameOptions.tileSpacing * 5,
+        height: (gameOptions.tileSize * 4 + gameOptions.tileSpacing * 5) * 16 / 9,
+        backgroundColor: 0xecf0f1,
+        scene: [preloadAssets, playGame]
+    };
     game = new Phaser.Game(gameConfig);
     window.focus();//获得窗口焦点
     resize();//调整窗口
@@ -25,17 +25,17 @@ window.onload = function() {
 var preloadAssets = new Phaser.Class({
     Extends: Phaser.Scene,
     initialize:
-    function preloadAssets(){
-        Phaser.Scene.call(this, {key: "PreloadAssets"});
-    },
-     // 预加载 各种资源
+        function preloadAssets(){
+            Phaser.Scene.call(this, {key: "PreloadAssets"});
+        },
+    // 预加载 各种资源
     preload: function(){
         this.load.image("spot", "assets/sprites/spot.png");
         this.load.image("gametitle", "assets/sprites/gametitle.png");
         this.load.image("restart", "assets/sprites/restart.png");
         this.load.image("scorepanel", "assets/sprites/scorepanel.png");
         this.load.image("scorelabels", "assets/sprites/scorelabels.png");
-        this.load.image("logo", "assets/sprites/logo.png");
+        //this.load.image("logo", "assets/sprites/logo.png");
         this.load.image("howtoplay", "assets/sprites/howtoplay.png");
         this.load.spritesheet("tiles", "assets/sprites/tiles.png", {
             frameWidth: gameOptions.tileSize,
@@ -53,10 +53,10 @@ var preloadAssets = new Phaser.Class({
 var playGame = new Phaser.Class({
     Extends: Phaser.Scene,
     initialize:
-    function playGame(){
-        Phaser.Scene.call(this, {key: "PlayGame"});
-    },
-     // 游戏开始运行
+        function playGame(){
+            Phaser.Scene.call(this, {key: "PlayGame"});
+        },
+    // 游戏开始运行
     create: function(){
         this.fieldArray = [];
         this.fieldGroup = this.add.group();
@@ -87,12 +87,12 @@ var playGame = new Phaser.Class({
         this.add.sprite(10, 5, "gametitle").setOrigin(0, 0);
         var howTo = this.add.sprite(game.config.width, 5, "howtoplay");
         howTo.setOrigin(1, 0);
-        //var logo = this.add.sprite(game.config.width / 2, game.config.height, "logo");
-        //logo.setOrigin(0.5, 1);
-        //logo.setInteractive();
-        //logo.on("pointerdown", function(){
-        //    window.location.href = "enjoy it!!!"
-        //});
+        // var logo = this.add.sprite(game.config.width / 2, game.config.height, "logo");
+        // logo.setOrigin(0.5, 1);
+        // logo.setInteractive();
+        // logo.on("pointerdown", function(){
+        //     window.location.href = "http://www.nbdp.net/"
+        // });
         this.scoreText = this.add.bitmapText(this.tileDestination(0, COL) - 80, this.tileDestination(0, ROW) - 225, "font", "0");
         this.bestScoreText = this.add.bitmapText(this.tileDestination(2, COL) - 190, this.tileDestination(0, ROW) - 225, "font", this.bestScore.toString());
         //键盘按下执行的操作
@@ -101,6 +101,7 @@ var playGame = new Phaser.Class({
         this.addTile();
         this.addTile();
         //键盘放开执行的操作
+        // add swipe check
         this.input.on("pointerup", this.endSwipe, this);
         this.moveSound = this.sound.add("move");
         this.growSound = this.sound.add("grow");
@@ -110,27 +111,28 @@ var playGame = new Phaser.Class({
         var swipe = new Phaser.Geom.Point(e.upX - e.downX, e.upY - e.downY);
         var swipeMagnitude = Phaser.Geom.Point.GetMagnitude(swipe);
         var swipeNormal = new Phaser.Geom.Point(swipe.x / swipeMagnitude, swipe.y / swipeMagnitude);
-        if(swipeMagnitude > 20 && swipeTime < 1000 && (Math.abs(swipeNormal.y) > 0.8 || Math.abs(swipeNormal.x) > 0.8)){
+        console.log('swipe x:', swipeNormal.x, 'y:', swipeNormal.y, 'swipeMagnitude:', swipeMagnitude);
+        if(swipeMagnitude > 10 /*&& swipeTime < 1000*/ && (Math.abs(swipeNormal.y) > 0.3 || Math.abs(swipeNormal.x) > 0.3)){
             var children = this.fieldGroup.getChildren();
-            if(swipeNormal.x > 0.8) {
+            if(swipeNormal.x > 0.3) {
                 for (var i = 0; i < children.length; i++){
                     children[i].depth = game.config.width - children[i].x;
                 }
                 this.handleMove(0, 1);
             }
-            if(swipeNormal.x < -0.8) {
+            if(swipeNormal.x < -0.3) {
                 for (var i = 0; i < children.length; i++){
                     children[i].depth = children[i].x;
                 }
                 this.handleMove(0, -1);
             }
-            if(swipeNormal.y > 0.8) {
+            if(swipeNormal.y > 0.3) {
                 for (var i = 0; i < children.length; i++){
                     children[i].depth = game.config.height - children[i].y;
                 }
                 this.handleMove(1, 0);
             }
-            if(swipeNormal.y < -0.8) {
+            if(swipeNormal.y < -0.3) {
                 for (var i = 0; i < children.length; i++){
                     children[i].depth = children[i].y;
                 }
@@ -165,7 +167,7 @@ var playGame = new Phaser.Class({
                 },
             });
         }
-	},
+    },
     //确定是哪些键被按下，执行相关的操作-移动handleMove()
     handleKey: function(e){
         if(this.canMove){
